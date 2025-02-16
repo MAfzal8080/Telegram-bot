@@ -5,6 +5,7 @@ import { UserService } from './user.service';
 import { TeleUser } from 'src/user/teleuser.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { Interval } from '@nestjs/schedule';
 
 @Injectable()
 export class BotService {
@@ -20,9 +21,9 @@ export class BotService {
         this.bot.on('message', async (msg) => {
             const chatId = msg.chat.id;
             const check = await this.checkBlock(chatId)
-            if(check){
+            if (check) {
                 this.bot.sendMessage(chatId, 'You have been blocked by the admin');
-            }else{
+            } else {
                 const text = msg.text;
                 if (text !== '/start' && !text.startsWith('/')) {
                     const cityName = text;
@@ -35,9 +36,9 @@ export class BotService {
         this.bot.onText(/\/subscribe/, async (msg) => {
             const chatId = msg.chat.id;
             const check = await this.checkBlock(chatId)
-            if(check){
+            if (check) {
                 this.bot.sendMessage(chatId, 'You have been blocked by the admin');
-            }else{
+            } else {
                 const check = await this.userService.subscribeUser(chatId);
                 var message;
                 await this.userService.logConversation(msg.chat.id, msg.chat.username, msg.text);
@@ -82,26 +83,28 @@ export class BotService {
         this.bot.sendMessage(chatId, "You have been subscribed to our weather sevice", options);
     }
 
-    // @Interval(10000)
+    @Interval(10000)
     async handleInterval() {
         const users = await this.userService.getSubscribedUsers();
         var city;
-        for (const user of users) {
-
-            for (var i = user.conversations.length - 1; i >= 0; i--) {
-                if (!user.conversations[i].message.startsWith('/')) {
-                    city = user.conversations[i].message;
-                    console.log(city);
-                    break;
+        if (users && users.length > 0) {
+            for (const user of users) {
+                if (user.conversations && user.conversations.length > 0) {
+                    for (var i = user.conversations.length - 1; i >= 0; i--) {
+                        if (!user.conversations[i].message.startsWith('/')) {
+                            city = user.conversations[i].message;
+                            break;
+                        }
+                    }
                 }
+                await this.sendWeatherUpdate(user.chatId, city);
             }
-            await this.sendWeatherUpdate(user.chatId, city);
         }
     }
 
     async checkBlock(chatId: number): Promise<boolean> {
         const user = await this.userModel.findOne({ chatId }).exec();
-        if(user?.isBlock){
+        if (user?.isBlock) {
             return true;
         }
         return false;
@@ -116,9 +119,9 @@ export class BotService {
         if (!user) {
             throw new NotFoundException("Some error occurred");
         }
-    
+
         user.isBlock = !user.isBlock;
-    
+
         return user.save();
     }
 
@@ -129,8 +132,8 @@ export class BotService {
 
         if (!result) {
             throw new NotFoundException("Some error occured");
-        }else{
-            return {success: true};
+        } else {
+            return { success: true };
         }
         return result?.save();
     }

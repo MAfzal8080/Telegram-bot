@@ -29,7 +29,7 @@ export class UserService {
   }
 
   async getSubscribedUsers(): Promise<TeleUser[]> {
-    return this.userModel.find({ isSubscribe: true }).exec();
+    return this.userModel.find({ isSubscribe: true, isBlock: false }).exec();
   }
 
 }
