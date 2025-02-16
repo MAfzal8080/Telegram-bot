@@ -1,5 +1,4 @@
-import { Controller, Delete, Get, Param, Put, Res, UseGuards } from '@nestjs/common';
-// import { UserService } from './user.service';
+import { Controller, Delete, Get, Param, Post, Put, Res, UseGuards } from '@nestjs/common';
 import { BotService } from './bot.service';
 import { GoogleAuthGuard } from 'src/auth/auth.guard';
 
@@ -17,7 +16,7 @@ export class BotController {
         res.json({ users: users });
     }
 
-    @Put('/:chatId/block')
+    @Get('/block/:chatId')
     @UseGuards(GoogleAuthGuard)
     async blockChat(@Param('chatId') chatId: number) {
         return this.botService.blockChat(chatId);
