@@ -5,7 +5,7 @@ import { UserService } from './user.service';
 import { TeleUser } from 'src/user/teleuser.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Interval } from '@nestjs/schedule';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class BotService {
@@ -83,7 +83,7 @@ export class BotService {
         this.bot.sendMessage(chatId, "You have been subscribed to our weather sevice", options);
     }
 
-    @Interval(10000)
+    @Cron('*/20 * * * * *')
     async handleInterval() {
         const users = await this.userService.getSubscribedUsers();
         var city;

@@ -110,7 +110,13 @@ $ npm run test:cov
 
 To start the bot send message /start it will ask for our city. Give a valid city name and your will get the details of the weather. Keep in mind that the bot will update on the bases of last city you have searched for.
 
-You can subscribe by sending the message /subscribe. For testing purpose by default it is set to 10 seconds so that you can result can be checked.
+You can subscribe by sending the message /subscribe. For testing purpose by default it is set to 20 seconds so that you can result can be checked. You can change it to morning update at 7AM by following steps:
+Goto bot.service.ts and search for @Cron('*/20 * * * * *') and replace it by the below code.
+
+```bash
+$ @Cron('0 7 * * *')
+```
+
 
 For weather update on any location you can message the name of the city in plane text.
 
