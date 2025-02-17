@@ -53,6 +53,17 @@ export class BotService {
                 await this.userService.logConversation(msg.chat.id, msg.chat.username, msg.text);
             }
         });
+
+        this.bot.onText(/\/help/, async (msg) => {
+            const chatId = msg.chat.id;
+            const check = await this.checkBlock(chatId)
+            if (check) {
+                this.bot.sendMessage(chatId, 'You have been blocked by the admin');
+            } else {
+                this.bot.sendMessage(msg.chat.id, 'Use the following text message: \n/start : To Start the bot.\n/subscribe : To subscribe the service for daily updates. Any city name : To get Weather update of the city. \n/help for the help.');
+                await this.userService.logConversation(msg.chat.id, msg.chat.username, msg.text);
+            }
+        });
     }
 
     async sendWeatherUpdate(chatId: number, cityName: string) {

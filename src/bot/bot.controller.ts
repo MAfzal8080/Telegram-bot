@@ -1,6 +1,7 @@
-import { Controller, Delete, Get, Param, Post, Put, Res, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post, Put, Req, Res, UseGuards } from '@nestjs/common';
 import { BotService } from './bot.service';
 import { GoogleAuthGuard } from 'src/auth/auth.guard';
+import axios from 'axios';
 
 @Controller('bot')
 export class BotController {
