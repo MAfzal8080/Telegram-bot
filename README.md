@@ -74,6 +74,7 @@
 ```bash
 $  git clone https://github.com/MAfzal8080/Admin-panel.git
 ```
+Note: Create a .env file and paste VITE_API_URL=BOT_API_KEY
 
 6. In command prompt type
 ```bash
